@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Confirmation</title>
+</head>
+<body>
+    <h1>Registration Confirmed</h1>
+    <p>Thank you for registering. Here are your details:</p>
+
+    <ul>
+        <li><strong>Patient Name:</strong> {{ first_name }} {{ last_name }}</li>
+        <li><strong>Date of Birth:</strong> {{ date_of_birth }}</li>
+        <li><strong>Therapist:</strong> {{ therapist_name }}</li>
+    </ul>
+
+    <p>Your registration has been successfully submitted.</p>
+    <a href="/">Register Another Patient</a>
+</body>
+</html>
