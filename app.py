@@ -1,11 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 import sqlite3
 from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = "your_secret_key_here"  # required for flash messages
 
 # database setup
-
 def init_db():
     conn = sqlite3.connect("patients.db")
     cursor = conn.cursor()
@@ -22,19 +22,49 @@ def init_db():
     conn.commit()
     conn.close()
 
-@app.route("/")
+# initialize the database
+init_db()
+
+@app.route("/", methods=["GET"])
 def form():
     return render_template("form.html")
 
 @app.route("/submit", methods=["POST"])
 def submit():
-    # get form data
-    first_name = request.form["first_name"]
-    last_name = request.form["last_name"]
-    date_of_birth = request.form["date_of_birth"]
-    therapist_name = request.form["therapist_name"]
+    # get form data with validation
+    first_name = request.form.get('first_name', '').strip()
+    last_name = request.form.get('last_name', '').strip()
+    date_of_birth = request.form.get('date_of_birth', '').strip()
+    therapist_name = request.form.get('therapist_name', '').strip()
 
-    # store data in database
+    # validation
+    errors = []
+    # check for empty fields
+    if not first_name:
+        errors.append("First name is required")
+    if not last_name:
+        errors.append("Last name is required")
+    if not date_of_birth:
+        errors.append("Date of birth is required")
+    if not therapist_name:
+        errors.append("Therapist name is required")
+
+    # validate date is in the past
+    if date_of_birth:
+        try:
+            birth_date = datetime.strptime(date_of_birth, '%Y-%m-%d')
+            if birth_date.date() >= datetime.now().date():
+                errors.append("Date of birth must be in the past")
+        except ValueError:
+            errors.append("Invalid date format")
+
+    # if validation fails, flash errors and redirect to form
+    if errors:
+        for error in errors:
+            flash(error, 'error')
+        return redirect(url_for('form'))
+
+    # store data in database (only if validation passes)
     conn = sqlite3.connect("patients.db")
     cursor = conn.cursor()
     cursor.execute("""
@@ -52,5 +82,4 @@ def submit():
                            therapist_name=therapist_name)
 
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True)

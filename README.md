@@ -1,6 +1,6 @@
 # Patient Registration Flask Application
 
-A simple Flask application for patient registration with therapist assignment. This application allows users to submit patient information through a web form with secure database storage.
+A simple Flask application for patient registration with therapist assignment. This application allows users to submit patient information through a web form with secure database storage and comprehensive validation.
 
 
 ## Features
@@ -8,17 +8,19 @@ A simple Flask application for patient registration with therapist assignment. T
 - **Simple Registration Form** - Patient first name, last name, date of birth, and therapist name
 - **SQLite Database Storage** - Automatic table creation and data persistence
 - **Jinja2 Templating** - Dynamic confirmation page displaying submitted data
-- **Clean Form Validation** - Required field validation
+- **Form Validation** - Required field validation with flash messages
+- **Date Validation** - Ensures date of birth is in the past
+- **Error Handling** - User-friendly error messages for invalid submissions
 - **Confirmation Display** - Shows entered information after successful submission
 
 
 ## Technologies Used
 
 - **Python 3.x**
-- **Flask** - Lightweight web framework
+- **Flask** - Lightweight web framework with flash messaging
 - **SQLite** - Embedded database storage
-- **Jinja2** - Template rendering for dynamic content
-- **HTML5** - Clean form interface
+- **Jinja2** - Template rendering for dynamic content and error display
+- **HTML5** - Clean form interface with styling
 
 
 ## Installation
@@ -46,12 +48,12 @@ A simple Flask application for patient registration with therapist assignment. T
 
 ```
 flask_screening/
-├── app.py                   # Main Flask application
+├── app.py                   # Main Flask application with validation logic
 ├── patients.db              # SQLite database (auto-created)
 ├── static/
 ├── templates/
 │   ├── confirmation.html    # Success confirmation page with Jinja2 templating
-│   └── form.html            # Patient registration form
+│   └── form.html            # Patient registration form with error display
 └── README.md                # Project documentation
 ```
 
@@ -59,7 +61,7 @@ flask_screening/
 ## Application Routes
 
 * **`/`** - Main registration form page
-* **`/submit`** - Form submission handler (POST only)
+* **`/submit`** - Form submission handler with validation (POST only)
 
 
 ## Form Fields
@@ -67,8 +69,16 @@ flask_screening/
 The screening form collects the following information:
 * Patient First Name (required)
 * Patient Last Name (required)
-* Date of Birth (required)
+* Date of Birth (required, must be in the past)
 * Therapist Name (required)
+
+
+## Validation Features
+
+* Required Field Validation - All fields must be filled
+* Date Validation - Date of birth cannot be in the future
+* Flash Messages - Clear error messages displayed to users
+* Form Persistence - Invalid submissions return to form with error display
 
 
 ## Database Schema
@@ -85,12 +95,10 @@ The screening form collects the following information:
 
 
 ## Jinja2 Usage
-The confirmation page uses Jinja2 templating to display submitted data:
-* `{{ first_name }}` - Patient's first name
-* `{{ last_name }}` - Patient's last name
-* `{{ date_of_birth }}` - Patient's date of birth
-* `{{ therapist_name }}` - Assigned therapist name
 
+- Confirmation page: Displays submitted data using template variables
+- Form page: Shows validation error messages using Flask's flash messaging system
+- Error styling: CSS styling for user-friendly error display
 
 
 ## Usage Workflow
@@ -98,15 +106,11 @@ The confirmation page uses Jinja2 templating to display submitted data:
 1. Navigate to the home page
 2. Fill out the patient registration form
 3. Submit the form
-4. View confirmation page with entered details
-5. Data is automatically stored in SQLite database
+4. If validation fails: View error messages and correct issues
+5. If validation passes: View confirmation page with entered details
+6. Valid data is automatically stored in SQLite database
 
 
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
-
-
-## Support
-
-For questions or issues, please refer to the Flask documentation or create an issue in the project repository.
